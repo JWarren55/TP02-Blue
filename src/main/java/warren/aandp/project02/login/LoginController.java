@@ -39,9 +39,9 @@ public class LoginController {
         String userID = loginMethods.loginUser(profession, email, password);
 
         //look for user and check password
-        //String userName = managmantMathods.findUserName(userID);
+        String userName = managmantMathods.findUserName(userID);
         //set text at top of screen for name (used in case screen does not load and bad things are happening
-        //LoginText.setText(userName);
+        LoginText.setText(userName);
 
         if(!userID.equals("Wrong Password") && !userID.equals("Login Failed") && !userID.equals("no id found")) {
 
@@ -49,7 +49,7 @@ public class LoginController {
             FXMLLoader fxmlLoaderUser = new FXMLLoader(getClass().getResource(nextScreen));
             stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
             scene = new Scene(fxmlLoaderUser.load(), 640, 420);
-            stage.setTitle("Hello " + userID);
+            stage.setTitle("Hello " + userName);
             stage.setScene(scene);
 
             if (nextScreen.equals("StudentHome.fxml")) {

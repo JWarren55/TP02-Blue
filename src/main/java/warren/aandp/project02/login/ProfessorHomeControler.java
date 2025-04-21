@@ -186,7 +186,12 @@ public class ProfessorHomeControler {
         }
     }
 
-    public void onLogoutButtonClicked(ActionEvent actionEvent) {
-
+    public void onLogoutButtonClicked(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoaderStart = new FXMLLoader(MainApplication.class.getResource("start.fxml"));
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(fxmlLoaderStart.load(), 640, 420);
+        stage.setTitle("Sign Up or Login");
+        stage.setScene(scene);
+        stage.show();
     }
 }

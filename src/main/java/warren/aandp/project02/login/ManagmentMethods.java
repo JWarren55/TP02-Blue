@@ -24,9 +24,9 @@ public class ManagmentMethods {
         //check for Student of Proffessor
         String filePath;
         if (id.contains("S")) {
-            filePath = "warren/aandp/project02/login/Student.txt";;
+            filePath = "src/main/resources/warren/aandp/project02/login/Student.txt";;
         } else {
-            filePath = "warren/aandp/project02/login/professor.txt";;
+            filePath = "src/main/resources/warren/aandp/project02/login/professor.txt";;
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
