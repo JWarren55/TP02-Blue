@@ -27,6 +27,8 @@ import java.nio.file.Paths;
 
 public class StudentHomeController {
 
+    AppendingMethods appendingMethods = new AppendingMethods();
+
     private Stage stage;
     private Scene scene;
 
@@ -64,7 +66,16 @@ public class StudentHomeController {
     }
 
     public void onCourseRowClicked(MouseEvent e) {}
-    public void onUnenrollFromClassButtonClicked(ActionEvent e) {}
+
+    public void onUnenrollButtonClicked(ActionEvent actionEvent) throws IOException {
+        StudentCourseInfo selectedCourse = tblCourses.getSelectionModel().getSelectedItem();
+        if (selectedCourse != null) {
+            //String courseName = selectedCourse.getCourseName();
+            String courseID = selectedCourse.getCourseID();
+            appendingMethods.deleteFromLine(studentID, courseID);
+            appendingMethods.deleteFromLine(courseID,studentID);
+        }
+    }
 
     public void populateTableForStudent() {
         String[] parts = findStudentLine(studentID);
@@ -170,5 +181,5 @@ public class StudentHomeController {
     }
 
     public void onLogoutButtonClicked(ActionEvent e) {}
-    public void onUnenrollButtonClicked(ActionEvent e) {}
+
 }

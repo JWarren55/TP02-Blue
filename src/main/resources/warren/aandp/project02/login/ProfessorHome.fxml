@@ -26,7 +26,8 @@
         <children>
             <Button onAction="#onClassDetailButtonClicked"
                     text="View Selected Class Details"/>
-            <Button text="Delete Selected Class"/>
+            <Button text="Delete Selected Class"
+                    onAction="#onDeleteClassButtonClicked"/>
             <Button onAction="#onAddClassButtonClicked"
                     text="Add New Class"/>
             <Button onAction="#onLogoutButtonClicked"

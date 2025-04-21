@@ -25,6 +25,8 @@ import java.util.Set;
 
 public class ProfessorHomeControler {
 
+    AppendingMethods appendingMethods = new AppendingMethods();
+
     @FXML public Label professorHomeLabel;
     @FXML private TableView<ProfessorHomeInfo> professorClassesTable;
     @FXML private TableColumn<ProfessorHomeInfo, String> colCourseID;
@@ -83,6 +85,23 @@ public class ProfessorHomeControler {
         controller.setID(professorID);
 
         stage.show();
+    }
+
+    public void onDeleteClassButtonClicked(ActionEvent actionEvent) throws IOException {
+
+        ProfessorHomeInfo selectedCourse = professorClassesTable.getSelectionModel().getSelectedItem();
+        if (selectedCourse != null) {
+            String courseID = selectedCourse.getCourseID();
+            //delete class from student
+            appendingMethods.deleteCourseFromStudents(courseID);
+
+            //delete class from professor
+            appendingMethods.deleteFromLine(professorID, courseID);
+
+            //delete class from class file
+            appendingMethods.deleteCourse(courseID);
+
+        }
     }
 
     private void populateAllCourses() throws IOException {

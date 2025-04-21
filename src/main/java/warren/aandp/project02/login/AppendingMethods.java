@@ -4,21 +4,27 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AppendingMethods {
     private static final String BASE = "src/main/resources/warren/aandp/project02/login/";
 
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    //                           Add data to a line
+    //-------------------------------------------------------------------------------------------------------------------------------------
     public void appendToLine(String whereID, String valueID) throws IOException {
 
         String fileName;
-        if (whereID.startsWith("S"))       fileName = "Student.txt";
-        else if (whereID.startsWith("P"))  fileName = "professor.txt";
-        else                                fileName = "Course.txt";
+        if (whereID.startsWith("S")) fileName = "Student.txt";
+        else if (whereID.startsWith("P")) fileName = "professor.txt";
+        else fileName = "Course.txt";
 
         Path file = Paths.get(BASE + fileName);
 
         // Read the current contents from the SAME file we will later write to
-        java.util.List<String> lines = Files.readAllLines(file);
+        List<String> lines = Files.readAllLines(file);
 
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
@@ -41,54 +47,138 @@ public class AppendingMethods {
         // Write the whole file back
         Files.write(file, lines);
     }
-    /*
+
     public void deleteFromLine(String whereID, String valueID) throws IOException {
-        String studentPath = "/warren/aandp/project02/login/Student.txt";
-        String professorPath = "/warren/aandp/project02/login/professor.txt";
-        String coursePath = "/warren/aandp/project02/login/Course.txt";
+
+        String studentPath = "src/main/resources/warren/aandp/project02/login/Student.txt";
+        String professorPath = "src/main/resources/warren/aandp/project02/login/professor.txt";
+        String coursePath = "src/main/resources/warren/aandp/project02/login/Course.txt";
+
+        //sort whereID to proper file
         String filePath = "";
         if (whereID.contains("S")) {
             filePath = studentPath;
         } else if (whereID.contains("P")) {
             filePath = professorPath;
-        } else if (whereID.contains("C")){
+        } else if (whereID.contains("C")) {
             filePath = coursePath;
         }
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(filePath)))) {
-            String currentLine;
-            String[] line;
-            int whereValueIDInLine;
 
+        File inputFile = new File(filePath);
+        List<String> updatedLines = new ArrayList<>();
+
+        //delete a line
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
+            String currentLine;
+
+            boolean gradeDeleted = false;
             while ((currentLine = reader.readLine()) != null) {
-                if(currentLine.startsWith(whereID + ",")) {
-                    //splits line into email,name, salt, password
-                    line = currentLine.split(",");
-                    int num = 0;
-                    for (String l : line) {
-                        if (l.equals(valueID)) {
-                            whereValueIDInLine = num;
-                            break;
+                if (currentLine.startsWith(whereID + ",")) {
+                    String[] parts = currentLine.split(",");
+                    StringBuilder newLine = new StringBuilder();
+                    newLine.append(parts[0]);
+                    for (int i = 1; i < parts.length; i++) {
+                        if ( !gradeDeleted && (whereID.contains("S") && (parts[i+1].equals(valueID))) ) {
+                            gradeDeleted = true;
+                        } else if ( !parts[i].equals(valueID) ) {
+                            newLine.append(",").append(parts[i]);
                         }
-                        num++;
+                    }
+                    updatedLines.add(newLine.toString());
+                } else {
+                    updatedLines.add(currentLine); // Keep untouched lines
+                }
+            }
+        }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(inputFile))) {
+            for (String line : updatedLines) {
+                writer.write(line);
+                writer.newLine();
+            }
+        }
+    }
+
+    public void deleteCourseFromStudents(String courseID) throws IOException {
+        Path file = Paths.get(BASE + "Student.txt");
+
+        List<String> lines = Files.readAllLines(file);
+        List<String> updatedLines = new ArrayList<>();
+
+        for (String line : lines) {
+            String[] parts = line.split(",");
+            List<String> cleaned = new ArrayList<>();
+
+            for (int i = 0; i < parts.length; i++) {
+                if (parts[i].trim().equals(courseID)) {
+                    // Skip this item and the one before it, if there is one
+                    if (!cleaned.isEmpty()) {
+                        cleaned.remove(cleaned.size() - 1);
+                    }
+                    continue;
+                }
+                cleaned.add(parts[i]);
+            }
+
+            updatedLines.add(String.join(",", cleaned));
+        }
+
+        Files.write(file, updatedLines);
+    }
+
+    public void deleteCourse(String courseID) throws IOException {
+        Path file = Paths.get(BASE + "Course.txt");
+
+        // Read all lines, filter out the ones containing the phrase
+        List<String> updatedLines = Files.readAllLines(file).stream()
+                .filter(line -> !line.contains(courseID))
+                .collect(Collectors.toList());
+
+        // Write the filtered list back to the file
+        Files.write(file, updatedLines);
+    }
+
+    /*
+
+    //-----------------------------------------------------------------------------------------------------------------------------------------------------
+    //                                          Delete value form line
+    //-----------------------------------------------------------------------------------------------------------------------------------------------------
+    public void deleteFromLine(String whereID, String valueID) throws IOException {
+
+        String fileName;
+        if (whereID.startsWith("S")) fileName = "Student.txt";
+        else if (whereID.startsWith("P")) fileName = "professor.txt";
+        else fileName = "Course.txt";
+
+        Path file = Paths.get(BASE + fileName);
+
+        File inputFile = new File(String.valueOf(file));
+        List<String> updatedLines = new ArrayList<>();
+
+        //delete a line
+        java.util.List<String> currentLines = Files.readAllLines(file);
+        boolean gradeDeleted = false;
+        for (int i = 0; i < currentLines.size(); i++) {
+            String currentLine = currentLines.get(i);
+            if (currentLine.startsWith(whereID + ",")) {
+                String[] parts = currentLine.split(",");
+                StringBuilder newLine = new StringBuilder();
+                newLine.append(parts[0]);
+                for (int j = 1; j < parts.length; j++) {
+                    if ( !gradeDeleted && (whereID.contains("S") && (parts[i+1].equals(valueID))) ) {
+                        gradeDeleted = true;
+                    } else if ( !parts[i].equals(valueID) ) {
+                        newLine.append(",").append(parts[j]);
                     }
                 }
+                updatedLines.add(newLine.toString());
+            } else {
+                updatedLines.add(currentLine); // Keep untouched lines
             }
-
-            String[] tempStringArray;
-
-            for (int j = 0; j < line.length; j++) {
-                if (j != whereValueIDInLine) { // skip the element at index i
-
-                    tempStringArray.
-                    tempStringArray.append(line[j]).append(" ");
-                }
-            }
-
-            String Newline = sb.toString().trim();
-
-            updatedContent.append(line).append(System.lineSeparator());
         }
+
+        Files.write(file, updatedLines);
     }
 
      */
 }
+
