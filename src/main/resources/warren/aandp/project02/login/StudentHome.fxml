@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER"
+      prefHeight="400"
+      prefWidth="600"
+      spacing="10"
+      xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="warren.aandp.project02.login.StudentHomeController">
+
+    <!-- Title -->
+    <Label text="Student Home"/>
+
+    <!-- Courses table -->
+    <TableView fx:id="tblCourses" onMouseClicked="#onCourseRowClicked">
+        <columns>
+            <TableColumn fx:id="colCourseID"    text="Course ID"/>
+            <TableColumn fx:id="colCourseName"  text="Class Name"/>
+            <TableColumn fx:id="colProfessor"   text="Professor"/>
+            <TableColumn fx:id="colTime"        text="Time"/>
+            <TableColumn fx:id="colDays"        text="Days"/>
+            <TableColumn fx:id="colGrade"       text="Grade"/>
+        </columns>
+    </TableView>
+
+    <!-- GPA display -->
+    <Label fx:id="gpaLbl" text="Overall GPA:"/>
+
+    <!-- Action buttons -->
+    <HBox alignment="CENTER" spacing="10">
+        <children>
+            <Button fx:id="enrollBtn"
+                    onAction="#onEnrollInClassButtonClicked"
+                    text="Enroll in a New Class"/>
+            <Button text="Unenroll from Selected Class"
+                    onAction="#onUnenrollButtonClicked"/>
+            <Button text="Log Out"
+                    onAction="#onLogoutButtonClicked"/>
+        </children>
+    </HBox>
+
+</VBox>

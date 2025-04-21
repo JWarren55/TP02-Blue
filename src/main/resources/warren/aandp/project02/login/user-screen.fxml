@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="warren.aandp.project02.login.UserController">
+   <children>
+      <Label layoutX="148.0" layoutY="79.0" prefHeight="58.0" prefWidth="303.0" text="Login Successful" textAlignment="CENTER">
+         <font>
+            <Font size="40.0" />
+         </font>
+      </Label>
+      <Label fx:id="nameText" alignment="CENTER" contentDisplay="CENTER" layoutX="110.0" layoutY="181.0" prefHeight="98.0" prefWidth="380.0" text="If you see this something wrong happened" textOverrun="CLIP">
+         <font>
+            <Font size="40.0" />
+         </font>
+      </Label>
+      <Button layoutX="274.0" layoutY="334.0" mnemonicParsing="false" onAction="#onLogOutButtonClick" text="Log out" />
+   </children>
+</AnchorPane>

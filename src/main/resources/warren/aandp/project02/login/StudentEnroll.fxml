@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" prefHeight="400" prefWidth="600" spacing="10" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="warren.aandp.project02.login.StudentEnrollControler">
+
+    <Label fx:id="labelEnrollInClass" text="Enroll in Classes" />
+
+    <TableView fx:id="tblAllCourses" prefWidth="500">
+        <columns>
+            <TableColumn fx:id="colCourseID" text="Course ID"/>
+            <TableColumn fx:id="colCourseName" text="Class Name" />
+            <TableColumn fx:id="colProfessor" text="Professor" />
+            <TableColumn fx:id="colTime" text="Time" />
+         <TableColumn fx:id="colDays" text="Days" />
+        </columns>
+    </TableView>
+
+    <Button onAction="#onEnrollButtonClicked" text="Enroll in Selected Class" />
+   <Button mnemonicParsing="false" text="Go Back"  onAction="#onGoBackButtonClick"/>
+</VBox>

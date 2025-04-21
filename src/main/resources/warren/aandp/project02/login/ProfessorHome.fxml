@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER"
+      prefHeight="400"
+      prefWidth="600"
+      spacing="10"
+      xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="warren.aandp.project02.login.ProfessorHomeControler">
+
+    <Label fx:id="professorHomeLabel" text="Professor Home"/>
+
+    <TableView fx:id="professorClassesTable" prefWidth="500">
+        <columns>
+            <TableColumn fx:id="colCourseID"  text="Course ID"/>
+            <TableColumn fx:id="colClassName" text="Class Name"/>
+            <TableColumn fx:id="ColTime"      text="Time"/>
+            <TableColumn fx:id="ColDays"      text="Days"/>
+        </columns>
+    </TableView>
+
+    <HBox alignment="CENTER" spacing="10" prefHeight="100.0" prefWidth="200.0">
+        <children>
+            <Button onAction="#onClassDetailButtonClicked"
+                    text="View Selected Class Details"/>
+            <Button text="Delete Selected Class"/>
+            <Button onAction="#onAddClassButtonClicked"
+                    text="Add New Class"/>
+            <Button onAction="#onLogoutButtonClicked"
+                    text="Log Out"/>
+        </children>
+    </HBox>
+
+</VBox>

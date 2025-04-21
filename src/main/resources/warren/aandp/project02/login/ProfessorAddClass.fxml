@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" prefHeight="300" prefWidth="400" spacing="10" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="warren.aandp.project02.login.ProfessorAddClassController">
+
+    <padding>
+        <Insets bottom="10" left="10" right="10" top="10" />
+    </padding>
+
+    <Label text="Add a New Class" fx:id="AddNewClassLabel"/>
+   <HBox layoutX="20.0" layoutY="109.0" spacing="10" />
+
+    <HBox spacing="10">
+        <Label text="Course Name:" />
+        <TextField fx:id="courseNameField" />
+    </HBox>
+
+    <HBox spacing="10">
+        <Label text="Times:" />
+        <TextField fx:id="timesField" promptText="12:00-1:30" />
+        <ChoiceBox fx:id="AMorPMChoiceBox" value="AM or PM">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="AM" />
+                    <String fx:value="PM" />
+                </FXCollections>
+            </items>
+        </ChoiceBox>
+    </HBox>
+
+    <HBox spacing="10">
+        <Label text="Days:" />
+      <CheckBox fx:id="mondayBox" mnemonicParsing="false" text="Mon" />
+      <CheckBox fx:id="tuesdayBox" layoutX="49.0" layoutY="10.0" mnemonicParsing="false" text="Tues" />
+      <CheckBox fx:id="wednesdayBox" layoutX="107.0" layoutY="10.0" mnemonicParsing="false" text="Wen" />
+      <CheckBox fx:id="thursdayBox" layoutX="164.0" layoutY="10.0" mnemonicParsing="false" text="Thur" />
+      <CheckBox fx:id="fridayBox" layoutX="222.0" layoutY="10.0" mnemonicParsing="false" text="Fri" />
+    </HBox>
+
+    <Button onAction="#onAddClassButtonClass" text="Add Class" />
+   <Button mnemonicParsing="false" onAction="#onGoBackButtonClicked" text="Go back" />
+
+</VBox>

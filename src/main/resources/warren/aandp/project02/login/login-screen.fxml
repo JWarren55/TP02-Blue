@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="warren.aandp.project02.login.LoginController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <Label fx:id="LoginText" text="Login">
+        <font>
+            <Font size="24.0" />
+        </font></Label>
+    <Label text="Email" />
+    <TextField fx:id="emailField" promptText="Email" />
+    <Label text="Password" />
+    <PasswordField fx:id="passwordField" promptText="Password" />
+   <Button mnemonicParsing="false" onAction="#onLoginStudentButtonClick" text="Login Student" />
+   <Button mnemonicParsing="false" text="Login Professor" onAction = "#onLoginProfessorButtonClick"/>
+   <Button mnemonicParsing="false" onAction="#onCancelButtonClick" text="Cancel" />
+
+</VBox>

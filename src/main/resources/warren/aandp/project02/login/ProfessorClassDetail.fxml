@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" prefHeight="400" prefWidth="600" spacing="10" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="warren.aandp.project02.login.ProfessorClassDetailControler">
+
+    <Label fx:id="classDetailLabel" text="Class Detail - (class name here)" />
+
+    <TableView fx:id="enrolledStudentsTable" prefWidth="500">
+        <columns>
+         <TableColumn fx:id="colID" text="Student ID" />
+            <TableColumn fx:id="colName" prefWidth="90.0" text="Student Name" />
+            <TableColumn fx:id="colEmail" prefWidth="88.0" text="Student Email" />
+            <TableColumn fx:id="colGrade" prefWidth="62.0" text="Grade" />
+        </columns>
+    </TableView>
+   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10">
+      <children>
+         <TextField />
+      
+          <!-- Possibly a button if you want to save grades, or manually update them -->
+          <Button onAction="#onSaveGradeButtonClick" text="Save Grade Updates" />
+      </children>
+   </HBox>
+   <Button onAction="#onGoBackButtonClick" text="Go Back" />
+</VBox>
