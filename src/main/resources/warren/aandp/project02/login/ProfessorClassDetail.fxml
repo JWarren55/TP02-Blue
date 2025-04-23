@@ -20,7 +20,6 @@
          <TextField fx:id = "upGradeTextfield" />
            <Button onAction= "#updateGradeButtonClick" text="Update Grade" />
           <!-- Possibly a button if you want to save grades, or manually update them -->
-          <Button onAction="#onSaveGradeButtonClick" text="Save Grade Updates" />
       </children>
    </HBox>
    <Button onAction="#onGoBackButtonClick" text="Go Back" />
