@@ -17,10 +17,9 @@
     </TableView>
    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10">
       <children>
-         <TextField />
-      
+         <TextField fx:id = "upGradeTextfield" />
+           <Button onAction= "#updateGradeButtonClick" text="Update Grade" />
           <!-- Possibly a button if you want to save grades, or manually update them -->
-          <Button onAction="#onSaveGradeButtonClick" text="Save Grade Updates" />
       </children>
    </HBox>
    <Button onAction="#onGoBackButtonClick" text="Go Back" />
