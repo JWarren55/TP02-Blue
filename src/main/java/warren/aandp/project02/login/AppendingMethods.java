@@ -100,6 +100,7 @@ public class AppendingMethods {
 
     public void deleteCourseFromStudents(String courseID) throws IOException {
         Path file = Paths.get(BASE + "Student.txt");
+        
 
         List<String> lines = Files.readAllLines(file);
         List<String> updatedLines = new ArrayList<>();
@@ -122,8 +123,11 @@ public class AppendingMethods {
             updatedLines.add(String.join(",", cleaned));
         }
 
-        Files.write(file, updatedLines);
-    }
+                    Files.write(file, updatedLines);
+                }
+            
+        
+    
 
     public void deleteCourse(String courseID) throws IOException {
         Path file = Paths.get(BASE + "Course.txt");
@@ -137,48 +141,38 @@ public class AppendingMethods {
         Files.write(file, updatedLines);
     }
 
-    /*
-
-    //-----------------------------------------------------------------------------------------------------------------------------------------------------
-    //                                          Delete value form line
-    //-----------------------------------------------------------------------------------------------------------------------------------------------------
-    public void deleteFromLine(String whereID, String valueID) throws IOException {
-
-        String fileName;
-        if (whereID.startsWith("S")) fileName = "Student.txt";
-        else if (whereID.startsWith("P")) fileName = "professor.txt";
-        else fileName = "Course.txt";
-
-        Path file = Paths.get(BASE + fileName);
-
-        File inputFile = new File(String.valueOf(file));
+    public void updateGrade(String studentID, String courseID, String newGrade) throws IOException {
+        Path file = Paths.get(BASE + "Student.txt");
+    
+        List<String> lines = Files.readAllLines(file);
         List<String> updatedLines = new ArrayList<>();
-
-        //delete a line
-        java.util.List<String> currentLines = Files.readAllLines(file);
-        boolean gradeDeleted = false;
-        for (int i = 0; i < currentLines.size(); i++) {
-            String currentLine = currentLines.get(i);
-            if (currentLine.startsWith(whereID + ",")) {
-                String[] parts = currentLine.split(",");
-                StringBuilder newLine = new StringBuilder();
-                newLine.append(parts[0]);
-                for (int j = 1; j < parts.length; j++) {
-                    if ( !gradeDeleted && (whereID.contains("S") && (parts[i+1].equals(valueID))) ) {
-                        gradeDeleted = true;
-                    } else if ( !parts[i].equals(valueID) ) {
-                        newLine.append(",").append(parts[j]);
+    
+        for (String line: lines) {
+            if (line.startsWith(studentID + ",")) {
+                String[] parts = line.split(",");
+                StringBuilder updatedLine = new StringBuilder(parts[0]); // Preserve student ID
+                
+                for (int i = 1; i < parts.length; i++) {
+                    if (parts[i].trim().equals(courseID) && i + 1 < parts.length) {
+                        updatedLine.append(",").append(courseID); // Keep course ID
+                        updatedLine.append(",").append(newGrade); // Replace grade
+                        i++; // Skip old grade entry
+                    } else {
+                        updatedLine.append(",").append(parts[i]); // Append unchanged values
                     }
                 }
-                updatedLines.add(newLine.toString());
+                updatedLines.add(updatedLine.toString());
             } else {
-                updatedLines.add(currentLine); // Keep untouched lines
+                updatedLines.add(line); // Keep untouched lines
             }
         }
-
+    
+    
         Files.write(file, updatedLines);
     }
+    }
+         
+    
+     
 
-     */
-}
 

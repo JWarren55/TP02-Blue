@@ -11,7 +11,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.BufferedReader;
@@ -26,15 +28,15 @@ public class ProfessorClassDetailControler {
     @FXML
     public Label classDetailLabel;
     @FXML
-    public TableView enrolledStudentsTable;
+    public TableView<ProfessorClassDetailsInfo> enrolledStudentsTable;
     @FXML
-    public TableColumn colID;
+    public TableColumn<ProfessorClassDetailsInfo, String> colID;
     @FXML
-    public TableColumn colName;
+    public TableColumn<ProfessorClassDetailsInfo, String> colName;
     @FXML
-    public TableColumn colEmail;
+    public TableColumn<ProfessorClassDetailsInfo, String> colEmail;
     @FXML
-    public TableColumn colGrade;
+    public TableColumn<ProfessorClassDetailsInfo, String> colGrade;
     private Stage stage;
     private Scene scene;
 
@@ -141,4 +143,25 @@ public class ProfessorClassDetailControler {
         InputStream in = getClass().getResourceAsStream(path);
         return (in == null) ? null : new BufferedReader(new InputStreamReader(in));
     }
+
+    @FXML
+    private TextField upGradeTextfield;
+    public void updateGradeButtonClick (ActionEvent actionEvent) throws IOException{
+        AppendingMethods am = new AppendingMethods();
+        ProfessorClassDetailsInfo selectedStudent = (ProfessorClassDetailsInfo) enrolledStudentsTable.getSelectionModel().getSelectedItem();
+        if (selectedStudent == null) return;
+
+        String studentID = selectedStudent.getStudentID();
+        String courseID = this.courseID;
+        String grade = selectedStudent.getGrade();
+        String professorID = this.professorID; // Assuming professorID is the missing argument
+        String newGrade = upGradeTextfield.getText().trim(); // Define and assign newGrade
+        am.updateGrade(studentID, courseID, newGrade);        populateScreen(); // Repopulate the table with updated data
+        enrolledStudentsTable.setItems(FXCollections.observableArrayList()); // Forces a full refresh
+
+    }
+
+    
+    
+   
 }
