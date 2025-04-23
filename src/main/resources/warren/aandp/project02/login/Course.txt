@@ -5,8 +5,7 @@ C-3,Math,3:00-4:00PM,MTRF,P-1,S-3,S-0
 C-4,Programming,12:30-1:20PM,MWF,P-1,S-4,S-5,S-0,S-2
 C-5,Calculus,1:00-1:50PM,TR,P-2,S-3,S-2
 C-6,Reading,8:00-10:00AM,MWF,P-3,S-4
-C-7,Gym,4:00-6:00PM,TF,P-3,S-5,S-0,S-2
-C-8,Bowling Practice,1:00-3:00AM,WF,P-1,S-2
+C-7,Gym,4:00-6:00PM,TF,P-3,S-5,S-0
+C-8,Bowling Practice,1:00-3:00AM,WF,P-1
 C-9,Football Practice,12:00-2:00PM,WF,P-1
 C-10,Chess Club,6:00-8:00PM,T,P-1
-C-11,Crochet,9:00-10:00AM,TH,P-0
