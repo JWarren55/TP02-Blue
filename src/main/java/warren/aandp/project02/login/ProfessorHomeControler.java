@@ -101,6 +101,7 @@ public class ProfessorHomeControler {
             //delete class from class file
             appendingMethods.deleteCourse(courseID);
 
+            populateAllCourses();
         }
     }
 

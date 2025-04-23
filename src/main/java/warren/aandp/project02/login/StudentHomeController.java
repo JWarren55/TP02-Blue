@@ -74,6 +74,7 @@ public class StudentHomeController {
             String courseID = selectedCourse.getCourseID();
             appendingMethods.deleteFromLine(studentID, courseID);
             appendingMethods.deleteFromLine(courseID,studentID);
+            populateTableForStudent();
         }
     }
 
