@@ -25,20 +25,17 @@ import java.util.Set;
 
 public class ProfessorHomeControler {
 
-    AppendingMethods appendingMethods = new AppendingMethods();
+    AppendingMethods appendingMethods = new AppendingMethods(); // helper for deletes
 
     @FXML public Label professorHomeLabel;
     @FXML private TableView<ProfessorHomeInfo> professorClassesTable;
-    @FXML private TableColumn<ProfessorHomeInfo, String> colCourseID;
-    @FXML private TableColumn<ProfessorHomeInfo, String> colClassName;
-    @FXML private TableColumn<ProfessorHomeInfo, String> ColTime;
-    @FXML private TableColumn<ProfessorHomeInfo, String> ColDays;
+    @FXML private TableColumn<ProfessorHomeInfo,String> colCourseID, colClassName, ColTime, ColDays;
     @FXML public Stage stage;
     @FXML public Scene scene;
 
     public String professorID;
 
-    // Called once after FXML loads:
+    // set up columns
     public void initialize() {
         colCourseID.setCellValueFactory(new PropertyValueFactory<>("courseID"));
         colClassName.setCellValueFactory(new PropertyValueFactory<>("courseName"));
@@ -46,151 +43,105 @@ public class ProfessorHomeControler {
         ColDays.setCellValueFactory(new PropertyValueFactory<>("days"));
     }
 
-   public void setID(String userID) throws IOException {
-       this.professorID = userID;
-       populateAllCourses();
-   }
+    // load professor courses after login
+    public void setID(String userID) throws IOException {
+        this.professorID = userID;
+        populateAllCourses();
+    }
 
+    // show class details for selected
     public void onClassDetailButtonClicked(ActionEvent actionEvent) throws IOException {
-        FXMLLoader fxmlLoaderClassDetail = new FXMLLoader(MainApplication.class.getResource("ProfessorClassDetail.fxml"));
+        FXMLLoader loader = new FXMLLoader(
+                MainApplication.class.getResource("ProfessorClassDetail.fxml")
+        );
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(fxmlLoaderClassDetail.load(), 640, 420);
+        scene = new Scene(loader.load(), 640, 420);
         stage.setTitle("Class Detail");
         stage.setScene(scene);
 
-        // pass Professor ID
-        ProfessorClassDetailControler controller = fxmlLoaderClassDetail.getController();
-        controller.setID(professorID);
-        //pass CourseID
-        try {
-            ProfessorHomeInfo selectedCourse = professorClassesTable.getSelectionModel().getSelectedItem();
-            String courseID = selectedCourse.getCourseID();
-            controller.setCourseID(courseID);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
+        ProfessorClassDetailControler ctl = loader.getController();
+        ctl.setID(professorID);
+        String cid = professorClassesTable.getSelectionModel().getSelectedItem().getCourseID();
+        ctl.setCourseID(cid);
         stage.show();
     }
 
+    // navigate to Add Class view
     public void onAddClassButtonClicked(ActionEvent actionEvent) throws IOException {
-        FXMLLoader fxmlLoaderAddClass = new FXMLLoader(MainApplication.class.getResource("ProfessorAddClass.fxml"));
+        FXMLLoader loader = new FXMLLoader(
+                MainApplication.class.getResource("ProfessorAddClass.fxml")
+        );
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(fxmlLoaderAddClass.load(), 640, 420);
+        scene = new Scene(loader.load(), 640, 420);
         stage.setTitle("Add a class");
         stage.setScene(scene);
 
-        // pass Professor ID
-        ProfessorAddClassController controller = fxmlLoaderAddClass.getController();
-        controller.setID(professorID);
-
+        ProfessorAddClassController ctl = loader.getController();
+        ctl.setID(professorID);
         stage.show();
     }
 
+    // delete selected class from all records
     public void onDeleteClassButtonClicked(ActionEvent actionEvent) throws IOException {
-
-        ProfessorHomeInfo selectedCourse = professorClassesTable.getSelectionModel().getSelectedItem();
-        if (selectedCourse != null) {
-            String courseID = selectedCourse.getCourseID();
-            //delete class from student
-            appendingMethods.deleteCourseFromStudents(courseID);
-
-            //delete class from professor
-            appendingMethods.deleteFromLine(professorID, courseID);
-
-            //delete class from class file
-            appendingMethods.deleteCourse(courseID);
-
-            populateAllCourses();
+        ProfessorHomeInfo sel = professorClassesTable.getSelectionModel().getSelectedItem();
+        if (sel != null) {
+            String cid = sel.getCourseID();
+            appendingMethods.deleteCourseFromStudents(cid);    // remove from students
+            appendingMethods.deleteFromLine(professorID, cid); // remove from professor
+            appendingMethods.deleteCourse(cid);                // remove course file entry
+            populateAllCourses();                              // refresh list
         }
     }
 
+    // read and show this prof’s courses
     private void populateAllCourses() throws IOException {
-        String[] professorLine = findProfessorLine(professorID);
-        if (professorLine == null || professorLine.length < 6) {
-            return;
-        }
+        String[] profLine = findProfessorLine(professorID);
+        if (profLine==null || profLine.length<6) return;
+        Set<String> cids = new HashSet<>();
+        for (int i=5; i<profLine.length; i++) cids.add(profLine[i].trim());
 
-        Set<String> professorCourseIDs = new HashSet<>();
-        for (int i = 5; i < professorLine.length; i++) {
-            professorCourseIDs.add(professorLine[i].trim());
-        }
-
-        ObservableList<ProfessorHomeInfo> professorClasses = FXCollections.observableArrayList();
-
+        ObservableList<ProfessorHomeInfo> list = FXCollections.observableArrayList();
         try (BufferedReader br = openResource("/warren/aandp/project02/login/Course.txt")) {
-            if (br == null) {
-                System.out.println("Could not find Course.txt resource!");
-                return;
-            }
-
-            String line;
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                String[] course = line.split(",");
-               if (course.length >= 5) {
-                    String courseID   = course[0].trim();
-                    String courseName = course[1].trim();
-                    String courseTime = course[2].trim();
-                    String courseDays = course[3].trim();
-
-                    if (professorCourseIDs.contains(courseID)) {
-                        ProfessorHomeInfo row = new ProfessorHomeInfo(courseID, courseName, courseTime, courseDays);
-                        professorClasses.add(row);
-                    }
+            String ln;
+            while (br!=null && (ln=br.readLine())!=null) {
+                String[] p = ln.trim().split(",");
+                if (p.length>=5 && cids.contains(p[0].trim())) {
+                    list.add(new ProfessorHomeInfo(p[0].trim(), p[1].trim(), p[2].trim(), p[3].trim()));
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        professorClassesTable.setItems(professorClasses);
+        professorClassesTable.setItems(list);
     }
 
-    private String[] findProfessorLine(String professorID) {
+    // find this prof in professor.txt
+    private String[] findProfessorLine(String pid) {
         try (BufferedReader br = openResource("/warren/aandp/project02/login/professor.txt")) {
-            if (br == null) {
-                System.out.println("Could not find professor.txt resource!");
-                return null;
+            String ln;
+            while (br!=null && (ln=br.readLine())!=null) {
+                String[] p = ln.trim().split(",");
+                if (p[0].trim().equals(pid)) return p;
             }
-            String line;
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                String[] course = line.split(",");
-                if (course.length > 0) {
-                    String fileProfessorID = course[0].trim();
-                    if (fileProfessorID.equals(professorID)) {
-                        return course;
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
         return null;
     }
 
-    // Reusable method for opening a resource from src/main/resources
+    // open live or classpath resource
     private BufferedReader openResource(String resourcePath) {
         try {
-            // try the file we just modified during this session
             Path path = Paths.get("src/main/resources").resolve(resourcePath.substring(1));
-            if (Files.exists(path)) {
-                return Files.newBufferedReader(path);   // <-- live data
-            }
-
-            // fall back to the immutable class‑path copy (works in the packaged JAR)
+            if (Files.exists(path)) return Files.newBufferedReader(path);
             InputStream in = getClass().getResourceAsStream(resourcePath);
-            return (in != null) ? new BufferedReader(new InputStreamReader(in)) : null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+            return (in!=null)?new BufferedReader(new InputStreamReader(in)):null;
+        } catch (IOException e) { e.printStackTrace(); return null; }
     }
 
+    // logout to start screen
     public void onLogoutButtonClicked(ActionEvent actionEvent) throws IOException {
-        FXMLLoader fxmlLoaderStart = new FXMLLoader(MainApplication.class.getResource("start.fxml"));
+        FXMLLoader loader = new FXMLLoader(
+                MainApplication.class.getResource("start.fxml")
+        );
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(fxmlLoaderStart.load(), 640, 420);
+        scene = new Scene(loader.load(), 640, 420);
         stage.setTitle("Sign Up or Login");
         stage.setScene(scene);
         stage.show();
