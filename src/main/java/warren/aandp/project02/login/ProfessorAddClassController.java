@@ -12,35 +12,34 @@ import java.io.IOException;
 
 public class ProfessorAddClassController {
 
-
+    // UI elements for new class input
     public ChoiceBox AMorPMChoiceBox;
     public Label AddNewClassLabel;
+    public TextField courseNameField, timesField;
+    public CheckBox mondayBox, tuesdayBox, wednesdayBox, thursdayBox, fridayBox;
+
     private Stage stage;
     private Scene scene;
-    public TextField courseNameField;
-    public TextField timesField;
-    public CheckBox mondayBox;
-    public CheckBox tuesdayBox;
-    public CheckBox wednesdayBox;
-    public CheckBox thursdayBox;
-    public CheckBox fridayBox;
-
     public String professorID;
-    ManagmentMethods mm = new ManagmentMethods();
-    AddClassMethods adm = new AddClassMethods();
 
+    ManagmentMethods mm = new ManagmentMethods();    // helper for user data
+    AddClassMethods adm = new AddClassMethods();      // helper to add class
+
+    // store logged-in professor ID
     public void setID(String userID) { professorID = userID; }
 
+    // handle Add Class button click
     public void onAddClassButtonClass(ActionEvent actionEvent) throws IOException {
-        String courseName  = courseNameField.getText();
-        String courseTime  = timesField.getText();
-        boolean monday     = mondayBox.isSelected();
-        boolean tuesday    = tuesdayBox.isSelected();
-        boolean wednesday  = wednesdayBox.isSelected();
-        boolean thursday   = thursdayBox.isSelected();
-        boolean friday     = fridayBox.isSelected();
-        String  AMorPM     = AMorPMChoiceBox.getValue().toString();
+        String courseName = courseNameField.getText();         // get class name
+        String courseTime = timesField.getText();              // get time
+        boolean monday    = mondayBox.isSelected();            // days selected
+        boolean tuesday   = tuesdayBox.isSelected();
+        boolean wednesday = wednesdayBox.isSelected();
+        boolean thursday  = thursdayBox.isSelected();
+        boolean friday    = fridayBox.isSelected();
+        String AMorPM     = AMorPMChoiceBox.getValue().toString(); // AM/PM
 
+        // attempt to add class and show status
         String status = adm.addClass(
                 professorID, courseName, courseTime, AMorPM,
                 monday, tuesday, wednesday, thursday, friday
@@ -48,18 +47,20 @@ public class ProfessorAddClassController {
         AddNewClassLabel.setText(status);
 
         if (status.equals("Class Added")) {
-            refreshProfessorHomeScreen(actionEvent);
+            refreshProfessorHomeScreen(actionEvent);           // go back on success
         }
     }
 
-
+    // reload professor home view with updated list
     private void refreshProfessorHomeScreen(ActionEvent actionEvent) throws IOException {
         FXMLLoader fx = new FXMLLoader(MainApplication.class.getResource("ProfessorHome.fxml"));
         Parent root = fx.load();
         ProfessorHomeControler controller = fx.getController();
 
-        controller.setID(professorID);
-        controller.professorHomeLabel.setText("Your class \"" + courseNameField.getText() + "\" has been added");
+        controller.setID(professorID);                        // pass ID back
+        controller.professorHomeLabel.setText(
+                "Your class \"" + courseNameField.getText() + "\" has been added"
+        );
 
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         stage.setTitle("Hello " + mm.findUserName(professorID));
@@ -67,18 +68,17 @@ public class ProfessorAddClassController {
         stage.show();
     }
 
+    // handle Go Back button: load home without adding
     public void onGoBackButtonClicked(ActionEvent actionEvent) throws IOException {
-        //Load CLass detail Screen
-        FXMLLoader fxmlLoaderProfessorHome = new FXMLLoader(MainApplication.class.getResource("ProfessorHome.fxml"));
+        FXMLLoader loader = new FXMLLoader(
+                MainApplication.class.getResource("ProfessorHome.fxml")
+        );
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(fxmlLoaderProfessorHome.load(), 640, 420);
+        scene = new Scene(loader.load(), 640, 420);
         stage.setTitle("Hello " + mm.findUserName(professorID));
         stage.setScene(scene);
-        //pass Professor ID
-        ProfessorHomeControler controller = fxmlLoaderProfessorHome.getController();
+        ProfessorHomeControler controller = loader.getController();
         controller.setID(professorID);
-
         stage.show();
     }
-
 }

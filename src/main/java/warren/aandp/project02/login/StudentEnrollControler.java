@@ -1,6 +1,3 @@
-/* ================================
-   StudentEnrollControler.java
-   ================================ */
 package warren.aandp.project02.login;
 
 import javafx.collections.FXCollections;
@@ -26,17 +23,13 @@ public class StudentEnrollControler {
 
     private Stage stage;
     private Scene scene;
-
     private String studentID;
-    ManagmentMethods mm = new ManagmentMethods();
+    ManagmentMethods mm = new ManagmentMethods();             // helper for user data
 
     @FXML private TableView<StudentEnrollInfo> tblAllCourses;
-    @FXML private TableColumn<StudentEnrollInfo, String> colCourseID;
-    @FXML private TableColumn<StudentEnrollInfo, String> colCourseName;
-    @FXML private TableColumn<StudentEnrollInfo, String> colProfessor;
-    @FXML private TableColumn<StudentEnrollInfo, String> colTime;
-    @FXML private TableColumn<StudentEnrollInfo, String> colDays;
+    @FXML private TableColumn<StudentEnrollInfo,String> colCourseID, colCourseName, colProfessor, colTime, colDays;
 
+    // set up table columns
     public void initialize() {
         colCourseID.setCellValueFactory(new PropertyValueFactory<>("courseID"));
         colCourseName.setCellValueFactory(new PropertyValueFactory<>("courseName"));
@@ -45,27 +38,29 @@ public class StudentEnrollControler {
         colDays.setCellValueFactory(new PropertyValueFactory<>("days"));
     }
 
+    // receive student ID and list available courses
     public void setID(String userID) {
         this.studentID = userID;
         populateAllCourses();
     }
 
+    // enroll in selected course
     public void onEnrollButtonClicked(ActionEvent e) throws IOException {
         AppendingMethods am = new AppendingMethods();
         StudentEnrollInfo sel = tblAllCourses.getSelectionModel().getSelectedItem();
         if (sel == null) return;
-
-        String courseID = sel.getCourseID();
-        am.appendToLine(studentID, courseID);     // let AppendingMethods add 100% + comma
-        am.appendToLine(courseID,  studentID);    // course roster
-
+        String cid = sel.getCourseID();
+        am.appendToLine(studentID, cid);    // record in student
+        am.appendToLine(cid, studentID);    // record in course roster
         refreshStudentHomeScreen(e);
     }
 
-
+    // go back to home after enroll
     private void refreshStudentHomeScreen(ActionEvent actionEvent) throws IOException {
-        FXMLLoader fx = new FXMLLoader(MainApplication.class.getResource("StudentHome.fxml"));
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        FXMLLoader fx = new FXMLLoader(
+                MainApplication.class.getResource("StudentHome.fxml")
+        );
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         scene = new Scene(fx.load(), 640, 420);
         stage.setTitle("Hello " + mm.findUserName(studentID));
         stage.setScene(scene);
@@ -73,20 +68,19 @@ public class StudentEnrollControler {
         stage.show();
     }
 
+    // list courses not yet enrolled
     private void populateAllCourses() {
         Set<String> enrolled = findEnrolledCourses(studentID);
         ObservableList<StudentEnrollInfo> data = FXCollections.observableArrayList();
         try (BufferedReader br = openResource("/warren/aandp/project02/login/Course.txt")) {
-            if (br == null) return;
             String line;
-            while ((line = br.readLine()) != null) {
+            while (br!=null && (line=br.readLine())!=null) {
                 String[] p = line.trim().split(",");
-                if (p.length >= 5) {
-                    String cid = p[0].trim();
-                    if (enrolled.contains(cid)) continue;
+                if (p.length>=5 && !enrolled.contains(p[0].trim())) {
                     data.add(new StudentEnrollInfo(
-                            cid, p[1].trim(), findProfessorName(p[4].trim()),
-                            p[2].trim(), p[3].trim()));
+                            p[0].trim(), p[1].trim(), findProfessorName(p[4].trim()),
+                            p[2].trim(), p[3].trim()
+                    ));
                 }
             }
         } catch (IOException e) { e.printStackTrace(); }
@@ -94,24 +88,21 @@ public class StudentEnrollControler {
         tblAllCourses.refresh();
     }
 
+    // get already enrolled course IDs from student record
     private Set<String> findEnrolledCourses(String id) {
         Set<String> s = new HashSet<>();
         String[] parts = findStudentLine(id);
-        if (parts == null) return s;
-        for (int i = 5; i < parts.length; i++) {       // ← changed (step = 1 to survive mis‑shifts)
-            String tok = parts[i].trim();
-            if (tok.startsWith("C-")) s.add(tok);
-        }
+        if (parts==null) return s;
+        for (int i=5; i<parts.length; i++) if (parts[i].trim().startsWith("C-")) s.add(parts[i].trim());
         return s;
     }
 
     private String[] findStudentLine(String id) {
         try (BufferedReader br = openResource("/warren/aandp/project02/login/Student.txt")) {
-            if (br == null) return null;
             String ln;
-            while ((ln = br.readLine()) != null) {
+            while (br!=null && (ln=br.readLine())!=null) {
                 String[] p = ln.trim().split(",");
-                if (p.length > 0 && p[0].trim().equals(id)) return p;
+                if (p[0].trim().equals(id)) return p;
             }
         } catch (IOException e) { e.printStackTrace(); }
         return null;
@@ -119,41 +110,33 @@ public class StudentEnrollControler {
 
     private String findProfessorName(String pid) {
         try (BufferedReader br = openResource("/warren/aandp/project02/login/Professor.txt")) {
-            if (br == null) return "Unknown";
             String ln;
-            while ((ln = br.readLine()) != null) {
+            while (br!=null && (ln=br.readLine())!=null) {
                 String[] p = ln.trim().split(",");
-                if (p.length >= 3 && p[0].trim().equals(pid)) return p[2].trim();
+                if (p[0].trim().equals(pid) && p.length>=3) return p[2].trim();
             }
         } catch (IOException e) { e.printStackTrace(); }
         return "Unknown";
     }
 
-    // Reusable method for opening a resource from src/main/resources
-
+    // open resource from project or classpath
     private BufferedReader openResource(String resourcePath) {
         try {
-            // try the file we just modified during this session
             Path path = Paths.get("src/main/resources").resolve(resourcePath.substring(1));
-            if (Files.exists(path)) {
-                return Files.newBufferedReader(path);   // <-- live data
-            }
-
-            // fall back to the immutable class‑path copy (works in the packaged JAR)
+            if (Files.exists(path)) return Files.newBufferedReader(path);
             InputStream in = getClass().getResourceAsStream(resourcePath);
-            return (in != null) ? new BufferedReader(new InputStreamReader(in)) : null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+            return (in!=null)?new BufferedReader(new InputStreamReader(in)):null;
+        } catch (IOException e) { e.printStackTrace(); return null; }
     }
 
     public void onGoBackButtonClick(ActionEvent a) throws IOException {
-        FXMLLoader fx = new FXMLLoader(MainApplication.class.getResource("StudentHome.fxml"));
-        stage = (Stage) ((Node) a.getSource()).getScene().getWindow();
+        FXMLLoader fx = new FXMLLoader(
+                MainApplication.class.getResource("StudentHome.fxml")
+        );
+        stage = (Stage)((Node)a.getSource()).getScene().getWindow();
         scene = new Scene(fx.load(), 640, 420);
-        stage.setScene(scene);
         fx.<StudentHomeController>getController().setID(studentID);
+        stage.setScene(scene);
         stage.show();
     }
 }
