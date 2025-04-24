@@ -24,7 +24,6 @@ public class ProfessorClassDetailControler {
     @FXML public Label classDetailLabel;                       // shows course info
     @FXML public TableView<ProfessorClassDetailsInfo> enrolledStudentsTable;
     @FXML public TableColumn<ProfessorClassDetailsInfo,String> colID, colName, colEmail, colGrade;
-    @FXML private TextField upGradeTextfield;                  // input for grade update
 
     private Stage stage;
     private Scene scene;
@@ -45,15 +44,7 @@ public class ProfessorClassDetailControler {
         // placeholder
     }
 
-    // update grade for selected student
-    public void updateGradeButtonClick(ActionEvent actionEvent) throws IOException {
-        AppendingMethods am = new AppendingMethods();
-        ProfessorClassDetailsInfo sel = enrolledStudentsTable.getSelectionModel().getSelectedItem();
-        if (sel == null) return;
-        String newGrade = upGradeTextfield.getText().trim();
-        am.updateGrade(sel.getStudentID(), courseID, newGrade);   // write new grade
-        populateScreen();                                         // refresh table
-    }
+
 
     // go back to professor home
     public void onGoBackButtonClick(ActionEvent actionEvent) throws IOException {
@@ -129,4 +120,71 @@ public class ProfessorClassDetailControler {
         InputStream in = getClass().getResourceAsStream(path);
         return (in==null)?null:new BufferedReader(new InputStreamReader(in));
     }
+
+    @FXML
+    private TextField upGradeTextfield;
+    public void updateGradeButtonClick (ActionEvent actionEvent) throws IOException{
+        AppendingMethods am = new AppendingMethods();
+        ProfessorClassDetailsInfo selectedStudent = (ProfessorClassDetailsInfo) enrolledStudentsTable.getSelectionModel().getSelectedItem();
+        if (selectedStudent == null) {
+            System.out.println("Please select a student");
+            return;
+        } 
+        String studentID = selectedStudent.getStudentID();
+        String courseID = this.courseID;
+    
+        String newGrade = upGradeTextfield.getText().trim(); // Define and assign newGrade
+        
+        if(newGrade.isEmpty()) {
+            System.out.println("Please enter a new grade");
+            return;
+        }
+        am.updateGrade(studentID, courseID, newGrade);   
+        
+        ObservableList<ProfessorClassDetailsInfo> updatedList = getUpdatedStudentList();
+        enrolledStudentsTable.setItems(updatedList);
+        
+
+    }
+    private List<String> getStudentIDsFromCourse(String courseID) {
+        List<String> studentIDs = new ArrayList<>();
+    
+        String[] courseLine = findCourseLine(courseID);
+        if (courseLine == null || courseLine.length < 6) return studentIDs; // Ensure valid data
+    
+        // Extract student IDs starting from index 5 (after course details)
+        for (int i = 5; i < courseLine.length; i++) {
+            studentIDs.add(courseLine[i].trim());
+        }
+    
+        return studentIDs;
+    }
+    public void refreshProfessorTable() {
+        populateScreen();
+        enrolledStudentsTable.refresh(); // Refresh the table to show the updated data
+
+    }
+    private ObservableList<ProfessorClassDetailsInfo> getUpdatedStudentList() {
+        ObservableList<ProfessorClassDetailsInfo> rows = FXCollections.observableArrayList();
+        String[] courseLine = findCourseLine(courseID);
+        if (courseLine == null || courseLine.length < 6) return rows;
+
+        List<String> studentIDs = getStudentIDsFromCourse(courseID);
+
+        for (String sid : studentIDs) {
+            String[] stu = findStudentLine(sid);
+            if (stu == null || stu.length < 5) continue;
+    
+            String email = stu[1].trim();
+            String name  = stu[2].trim();
+            String grade = findGradeForCourse(stu, courseID);
+    
+            rows.add(new ProfessorClassDetailsInfo(sid, name, email, grade));
+        }
+        return rows;
+    }
+
+    
+    
+   
 }

@@ -166,7 +166,7 @@ public class AppendingMethods {
                 updatedLines.add(line); // Keep untouched lines
             }
         }
-    
+   
     
         Files.write(file, updatedLines);
     }
