@@ -10,17 +10,6 @@ public class AddClassMethods {
     StudentEnrollControler sec = new StudentEnrollControler();
     String courseFilePath = "src\\main\\resources\\warren\\aandp\\project02\\login\\Course.txt";
     final int SAVED_ID_LOCATION = 0;
-
-   // public void writeCoursesToFile(ObservableList<StudentEnrollInfo> courses = tblCourses.getItems()) {
-       // try (BufferedWriter writer = new BufferedWriter(new FileWriter(courseFilePath, true))) {
-         //   for (StudentEnrollInfo course : courses) {
-           //     writer.write(course.getCourseName() + "," + course.getProfessorName() + "," + course.getTime() + "," + course.getDays());
-             //   writer.newLine();
-           // }
-       // } catch (IOException e) {
-         //   e.printStackTrace();
-       // }
-  //  }
     
     public String addClass(String proffessorID, String courseName, String time, String AMorPM,
                            boolean monday, boolean tuesday, boolean wednesday, boolean thursday, boolean friday) throws IOException {
@@ -95,6 +84,7 @@ public class AddClassMethods {
                 writer.newLine();
                 System.out.println("Account saved successfully");
                 writer.close();
+                //Add the class to professor
                 appendingMethods.appendToLine(proffessorID,finalID);
                 return "Class Added";
             } catch (IOException e) {

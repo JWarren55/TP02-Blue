@@ -207,7 +207,7 @@ public class LoginMethods {
     }
 
     //take in variable and key and output the decrypted form of the variable
-    public static String decrypt(String strToDecrypt, String secret)
+    public String decrypt(String strToDecrypt, String secret)
             throws NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException {
         setKey(secret);

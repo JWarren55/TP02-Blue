@@ -65,6 +65,7 @@ public class SignupController {
 
     }
 
+    //sign up as a professor
     public void onSignUpProfessorButtonClick(ActionEvent actionEvent) throws NoSuchPaddingException, IOException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
 
         signUp("Professor", actionEvent);

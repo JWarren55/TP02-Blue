@@ -12,10 +12,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class ProfessorClassDetailControler {
     public void setID(String userID) { professorID = userID; }
 
     // set course context and populate
-    public void setCourseID(String courseID) {
+    public void setCourseID(String courseID) throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         this.courseID = courseID;
         classDetailLabel.setText("Class Detail for " + courseID);
         populateScreen();
@@ -69,7 +71,7 @@ public class ProfessorClassDetailControler {
     }
 
     // load enrolled students from Course.txt and Student.txt
-    private void populateScreen() {
+    private void populateScreen() throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         if (courseID == null) return;
         String[] courseLine = findCourseLine(courseID);
         if (courseLine == null || courseLine.length < 6) return;
@@ -123,7 +125,8 @@ public class ProfessorClassDetailControler {
 
     @FXML
     private TextField upGradeTextfield;
-    public void updateGradeButtonClick (ActionEvent actionEvent) throws IOException{
+    //update the grade on a student
+    public void updateGradeButtonClick (ActionEvent actionEvent) throws IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         AppendingMethods am = new AppendingMethods();
         ProfessorClassDetailsInfo selectedStudent = (ProfessorClassDetailsInfo) enrolledStudentsTable.getSelectionModel().getSelectedItem();
         if (selectedStudent == null) {
@@ -146,6 +149,7 @@ public class ProfessorClassDetailControler {
         
 
     }
+
     private List<String> getStudentIDsFromCourse(String courseID) {
         List<String> studentIDs = new ArrayList<>();
     
@@ -159,12 +163,13 @@ public class ProfessorClassDetailControler {
     
         return studentIDs;
     }
-    public void refreshProfessorTable() {
+    public void refreshProfessorTable() throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         populateScreen();
         enrolledStudentsTable.refresh(); // Refresh the table to show the updated data
 
     }
-    private ObservableList<ProfessorClassDetailsInfo> getUpdatedStudentList() {
+    //make list students in class
+    private ObservableList<ProfessorClassDetailsInfo> getUpdatedStudentList() throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         ObservableList<ProfessorClassDetailsInfo> rows = FXCollections.observableArrayList();
         String[] courseLine = findCourseLine(courseID);
         if (courseLine == null || courseLine.length < 6) return rows;

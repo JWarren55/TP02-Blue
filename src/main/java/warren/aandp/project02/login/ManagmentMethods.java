@@ -17,6 +17,8 @@ public class ManagmentMethods {
     final int SAVED_SALT_LOCATION = 3;
     final int SAVED_PASSWORD_LOCATION = 4;
 
+
+    //Finds the name of student ot professor
     public String findUserName(String id) {
         //defult
         String name = "no id found";
@@ -48,10 +50,6 @@ public class ManagmentMethods {
             e.printStackTrace();
         }
         return name;
-    }
-
-    public void findSelectedTabelID() {
-
     }
 
 }

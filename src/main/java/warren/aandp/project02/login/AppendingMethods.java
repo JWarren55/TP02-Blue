@@ -48,6 +48,9 @@ public class AppendingMethods {
         Files.write(file, lines);
     }
 
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    //                           Delete a life from a file
+    //---------------------------------------------------------------------------------------------------------------------------------
     public void deleteFromLine(String whereID, String valueID) throws IOException {
 
         String studentPath = "src/main/resources/warren/aandp/project02/login/Student.txt";
@@ -98,6 +101,9 @@ public class AppendingMethods {
         }
     }
 
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    //                           Delete a course and grade from a student
+    //------------------------------------------------------------------------------------------------------------------------
     public void deleteCourseFromStudents(String courseID) throws IOException {
         Path file = Paths.get(BASE + "Student.txt");
         
@@ -124,11 +130,11 @@ public class AppendingMethods {
         }
 
                     Files.write(file, updatedLines);
-                }
-            
-        
-    
+    }
 
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    //                           Delete a whole course from course.txt
+    //---------------------------------------------------------------------------------------------------------------------------------
     public void deleteCourse(String courseID) throws IOException {
         Path file = Paths.get(BASE + "Course.txt");
 
@@ -141,6 +147,9 @@ public class AppendingMethods {
         Files.write(file, updatedLines);
     }
 
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    //                           Update a grade for a class in Student.txt
+    //------------------------------------------------------------------------------------------------------------------------
     public void updateGrade(String studentID, String courseID, String newGrade) throws IOException {
         Path file = Paths.get(BASE + "Student.txt");
     
@@ -170,7 +179,7 @@ public class AppendingMethods {
     
         Files.write(file, updatedLines);
     }
-    }
+}
          
     
      
